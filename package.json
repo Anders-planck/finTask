@@ -11,6 +11,7 @@
     "test": "node ace test",
     "lint": "eslint .",
     "format": "prettier --write .",
+    "fix:all": "npm run lint -- --fix && npm run format",
     "typecheck": "tsc --noEmit"
   },
   "imports": {
