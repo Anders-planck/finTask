@@ -6,13 +6,18 @@ import AppHeader from '~/components/app/layout/AppHeader.vue'
 import { Label } from '~/components/ui/label'
 import AuthPage from '~/components/auth/AuthPage.vue'
 import { cn } from '~/lib/utils'
-import { LoaderCircle, Github as GithubLogo } from 'lucide-vue-next'
+import { LoaderCircle, Github as GithubLogo, AlertCircle } from 'lucide-vue-next'
 import FormInput from '~/components/app/form/FormInput.vue'
+import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
+
+defineProps<{
+  exceptions: Record<string, string>
+}>()
 
 const form = useForm({
   email: '',
   password: '',
-  full_name: '',
+  fullName: '',
 })
 
 const link = {
@@ -31,12 +36,18 @@ const link = {
     <div :class="cn('grid gap-6', $attrs.class ?? '')">
       <form method="post" @submit.prevent="form.post('/register')">
         <div class="grid gap-2">
+          <Alert v-if="exceptions?.E_VALIDATION_ERROR" variant="destructive">
+            <AlertCircle class="w-4 h-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{{ exceptions.E_VALIDATION_ERROR }}</AlertDescription>
+          </Alert>
+
           <FormInput
             name="full_name"
             label="Full name"
             type="text"
-            v-model="form.full_name"
-            :errors="form.errors.full_name"
+            v-model="form.fullName"
+            :errors="form.errors.fullName"
             placeholder="Full name"
             :disabled="form.processing"
             auto-capitalize="words"
