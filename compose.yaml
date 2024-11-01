@@ -6,7 +6,6 @@ services:
     volumes:
       - psql-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=app
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
   mailer:

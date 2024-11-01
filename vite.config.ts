@@ -1,17 +1,28 @@
 import { defineConfig } from 'vite'
 import { getDirname } from '@adonisjs/core/helpers'
 import inertia from '@adonisjs/inertia/client'
-import react from '@vitejs/plugin-react'
+import vue from '@vitejs/plugin-vue'
 import adonisjs from '@adonisjs/vite/client'
-import UnoCSS from 'unocss/vite'
+import autoprefixer from 'autoprefixer'
+import tailwind from 'tailwindcss'
+import Component from 'unplugin-vue-components/vite'
 
 export default defineConfig({
   plugins: [
-    inertia({ ssr: { enabled: true, entrypoint: 'inertia/app/ssr.tsx' } }),
-    UnoCSS(),
-    react(),
-    adonisjs({ entrypoints: ['inertia/app/app.tsx'], reload: ['resources/views/**/*.edge'] }),
+    inertia({ ssr: { enabled: true, entrypoint: 'inertia/app/ssr.ts' } }),
+    vue(),
+    adonisjs({ entrypoints: ['inertia/app/app.ts'], reload: ['resources/views/**/*.edge'] }),
+    Component({
+      dirs: ['./inertia/components/ui'],
+      dts: true,
+    }),
   ],
+
+  css: {
+    postcss: {
+      plugins: [tailwind(), autoprefixer()],
+    },
+  },
 
   /**
    * Define aliases for importing modules from

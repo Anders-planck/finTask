@@ -1,5 +1,6 @@
 import { defineConfig } from '@adonisjs/inertia'
 import type { InferSharedProps } from '@adonisjs/inertia/types'
+import { CurrentUserDto } from '#dtos/auth/current_user_dto'
 
 const inertiaConfig = defineConfig({
   /**
@@ -11,7 +12,19 @@ const inertiaConfig = defineConfig({
    * Data that should be shared with all rendered pages
    */
   sharedData: {
-    errors: (ctx) => ctx.session?.flashMessages.get('errors'),
+    currentUser: (ctx) => CurrentUserDto.fromModel(ctx.auth.user).serialize(),
+    errors: (ctx) => {
+      const errors = ctx.session?.flashMessages.get('errors') ?? {}
+      return Object.keys(errors).reduce(
+        (obj, key) => ({
+          ...obj,
+          [key]: errors[key].join(', '),
+        }),
+        {}
+      )
+    },
+    exceptions: (ctx) => ctx.session.flashMessages.get('errorsBag') ?? {},
+    messages: (ctx) => ctx.session.flashMessages.all() ?? {},
   },
 
   /**
@@ -19,7 +32,7 @@ const inertiaConfig = defineConfig({
    */
   ssr: {
     enabled: true,
-    entrypoint: 'inertia/app/ssr.tsx',
+    entrypoint: 'inertia/app/ssr.ts',
   },
 })
 
